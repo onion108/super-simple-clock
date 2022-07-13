@@ -5,9 +5,12 @@ use crossterm::{
   terminal::{Clear, ClearType},
   QueueableCommand, Result,
 };
-use std::io::{stdout, Write, stdin};
+use std::io::{stdout, Write, stdin, Read};
 use std::thread;
 use std::time;
+use std::prelude::v1::*;
+use std::iter::Iterator;
+use getchar::getchar;
 
 mod logger;
 
@@ -37,21 +40,29 @@ fn main() -> Result<()> {
         )
         .green()
       );
+      println!();
+      println!();
       thread::sleep(time::Duration::from_millis(500));
     }
   });
   dl.log(&"[INFO] hi\n".to_string());
   loop {
-    let mut buf = String::new();
-    let ok = stdin().read_line(&mut buf).ok();
-    buf = buf.trim().to_string();
-    if ok != None {
-      dl.log(&format!("[INFO] got it: {}\n", buf));
-      if buf == "q" {
-        break;
-      }
+    // let mut buf = String::new();
+    // let ok = stdin().read_line(&mut buf).ok();
+    // buf = buf.trim().to_string();
+    // if ok != None {
+    //   dl.log(&format!("[INFO] got it: {}\n", buf));
+    //   if buf == "q" {
+    //     break;
+    //   }
+    // } else {
+    //   dl.log(&"[DEBUG] Failed to read line.\n".to_string())
+    // }
+    let ch = getchar().unwrap_or(' ');
+    if ch == 'q' {
+      break
     } else {
-      dl.log(&"[DEBUG] Failed to read line.\n".to_string())
+      dl.log(&format!("[DEBUG] Key stroke: '{}'\n", ch))
     }
   }
   Ok(())
