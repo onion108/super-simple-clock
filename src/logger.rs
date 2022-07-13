@@ -7,6 +7,7 @@ pub struct Logger {
     file_path: String
 }
 
+#[allow(dead_code)]
 impl Logger {
     pub fn new_logger(fpath: &str) -> Logger {
         return Logger {
